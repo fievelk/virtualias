@@ -35,7 +35,7 @@ def write_alias(config_file, alias, dest_dir):
     function_text = """\n{0}() {{
             cd {1}
             source {1}/{2}/bin/activate
-    }}""".format(args.alias, CURRENT_DIR, dest_dir)
+    }}""".format(alias, CURRENT_DIR, dest_dir)
 
     config_file.write(function_text + '\n')
 
