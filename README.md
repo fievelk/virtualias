@@ -1,6 +1,6 @@
 # VirtuAlias
 
-**VirtuAlias** is a minimal wrapper for **virtualenv**. It will simply create a new alias (actually, a ***function***) in your `~/.bashrc` or `~/.zshrc` configuration file, allowing you to switch between different environments.
+**VirtuAlias** is a minimal wrapper for **virtualenv**. It will simply create a new alias (actually, a ***function***) everytime you create a new environment, allowing you to switch between them. Functions are appended to your `~/.bashrc` or `~/.zshrc` configuration file.
 
 **Note** that this is a pretty basic script. If you are looking for something more, then you are probably looking for [**virtualenvwrapper**](https://virtualenvwrapper.readthedocs.org/en/latest/).
 
@@ -59,6 +59,8 @@ Some improvements are auspicable:
     This entails that we would need to check for duplicate alias/function names in both the shell configuration file ***and*** the new `~/.virtualias_functions` file.
 
 - Providing a method to **remove** aliases when we delete an environment.
+
+- Automatically detecting shell (e.g. **bash**, **zsh**).
 
 - Providing a parameter to manually specify the shell configuration file (e.g. `~/.bashrc`, `~/.zshrc`, etc.).
 
