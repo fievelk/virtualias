@@ -68,3 +68,5 @@ Some improvements are auspicable:
     (A wrapper is needed in order to avoid `SyntaxError` problems. See [this SO question](http://stackoverflow.com/questions/446052/how-can-i-check-for-python-version-in-a-program-that-uses-new-language-features))
 
 - Packaging (`setup.py`, etc.). Since this is a very small project, it may be not necessary.
+
+- If the `virtualenv` call fails, we should not write the function in the shell configuration file.
