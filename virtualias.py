@@ -11,7 +11,20 @@ import sys
 
 from os.path import expanduser
 
+
+# Valid command line answers
 VALID_CHOICES = {"yes": True, "y": True, "no": False, "n": False}
+
+# Function components
+STARTING_LINE = '\n# Start of virtualias function: {0}'
+CLOSING_LINE = '# End of virtualias function: {0}'
+FUNCTION_BODY = """\n{0}() {{
+    cd {1}
+    source {1}/{2}/bin/activate
+}}\n"""
+FUNCTION_TEXT = STARTING_LINE + FUNCTION_BODY + CLOSING_LINE
+FUNCTION_REGEXP = '{}\\(\\)\\s{{\n.*}}'
+
 
 class AliasExistsException(Exception):
     def __init__(self, value):
@@ -20,6 +33,33 @@ class AliasExistsException(Exception):
     def __str__(self):
         return repr(self.parameter)
 
+def delete_alias(alias, filename):
+    """Remove the alias function from the configuration file.
+    NOTE: this method requries function comments to be present in the configuration
+    file, as defined by the `STARTING_LINE` and `CLOSING_LINE` constants.
+    """
+
+    filepath = expanduser(filename)
+    with open(filepath, 'r+') as config_file:
+        text = ''
+        for line in config_file:
+            if line.strip() == STARTING_LINE.format(alias).strip():
+                # Skip lines until we reach the end of the function.
+                found_closing_line = False
+                for function_line in config_file:
+                    if function_line.strip() == CLOSING_LINE.format(alias).strip():
+                        found_closing_line = True
+                        break
+                if not found_closing_line:
+                    print("There is no closing line. VirtuAlias cannot delete " +
+                          "the alias.")
+                    return False
+            else:
+                text += line
+
+        config_file.seek(0)
+        config_file.truncate()
+        config_file.write(text)
 
 def write_alias(config_file, alias, dest_dir):
     """Write the alias (actually a function with the alias name) in the configuration
@@ -32,10 +72,7 @@ def write_alias(config_file, alias, dest_dir):
                 "Please choose another alias for your virtual environment.")
 
     CURRENT_DIR = os.getcwd()
-    function_text = """\n{0}() {{
-            cd {1}
-            source {1}/{2}/bin/activate
-    }}""".format(alias, CURRENT_DIR, dest_dir)
+    function_text = FUNCTION_TEXT.format(alias, CURRENT_DIR, dest_dir)
 
     config_file.write(function_text + '\n')
 
@@ -101,7 +138,10 @@ def call_virtualenv(virtualenv_args):
     lines_iterator = iter(popen.stdout.readline, b"")
     for line in lines_iterator:
         print(line.decode('utf-8'), end='') # Decode the byte object
-
+    # Wait for process to terminate before retrieving the return code
+    stream = popen.communicate()[0]
+    if popen.returncode != 0:
+        raise RuntimeError("Virtualenv call failed.")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -117,7 +157,10 @@ def main():
     # If an alias is specified, create the alias and call virtualenv
     if args.alias:
         edit_config_file(args.alias, virtualenv_args, filename='~/.zshrc')
-        call_virtualenv(virtualenv_args)
+        try:
+            call_virtualenv(virtualenv_args)
+        except RuntimeError as e:
+            delete_alias(args.alias, filename='~/.zshrc')
 
     # If an alias is NOT specified, ask user and eventually call virtualenv
     else:
