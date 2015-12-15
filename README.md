@@ -12,16 +12,18 @@ The function
 
 **VirtuAlias** writes a function at the bottom of your favourite shell configuration file (depending on the `$SHELL` variable).
 
-- **Bash**: `/bin/bash` -> `~/.bashrc`
-- **Zsh** : `/bin/zsh`  -> `~/.zshrc`
+| Shell    | $SHELL      | Config file |
+| -------- | ----------- | ----------- |
+| **Bash** | `/bin/bash` | `~/.bashrc` |
+| **Zsh**  | `/bin/zsh`  | `~/.zshrc`  |
 
 The function is as simple as follows:
 
-```
+```bash
 your_alias() {
     cd your/environment/folder;
     source your/environment/folder/bin/activate;
-        }
+    }
 ```
 
 
@@ -45,28 +47,30 @@ The reason why I wrote this script is that, as far as I know, **virtualenvwrappe
 Improvements
 ------------
 
-Some improvements are auspicable:
+Some improvements are auspicable or necessary:
 
-- Adding a specific file to store all aliases/functions (so that we do not mess too much with the shell configuration file). We could do this by adding the following in the shell configuration file:
+- [x] If the `virtualenv` call fails, we should not write the function in the shell configuration file.
 
-    ```
-    # Add VirtuAlias functions.
-    if [ -f ~/.virtualias_functions ]; then
-        source ~/.virtualias_functions
-    fi
-    ```
+- [ ] `source` the configuration file after having written the function.
 
-    This entails that we would need to check for duplicate alias/function names in both the shell configuration file ***and*** the new `~/.virtualias_functions` file.
+- [ ] Adding a specific file to store all aliases/functions (so that we do not mess too much with the shell configuration file). We could do this by adding the following in the shell configuration file:
 
-- Providing a method to **remove** aliases when we delete an environment.
+```bash
+# Add VirtuAlias functions.
+if [ -f ~/.virtualias_functions ]; then
+    source ~/.virtualias_functions
+fi
+```
 
-- Automatically detecting shell (e.g. **bash**, **zsh**).
+This entails that we would need to check for duplicate alias/function names in both the shell configuration file ***and*** the new `~/.virtualias_functions` file.
 
-- Providing a parameter to manually specify the shell configuration file (e.g. `~/.bashrc`, `~/.zshrc`, etc.).
+- [ ] Providing a method to **remove** aliases when we delete an environment.
 
-- Creating a wrapper around **VirtuAlias** so that the script is only executed when your Python version is `>= 3`.
+- [ ] Automatically detecting shell (e.g. **bash**, **zsh**).
+
+- [ ] Providing a parameter to manually specify the shell configuration file (e.g. `~/.bashrc`, `~/.zshrc`, etc.).
+
+- [ ] Creating a wrapper around **VirtuAlias** so that the script is only executed when your Python version is `>= 3`.
     (A wrapper is needed in order to avoid `SyntaxError` problems. See [this SO question](http://stackoverflow.com/questions/446052/how-can-i-check-for-python-version-in-a-program-that-uses-new-language-features))
 
-- Packaging (`setup.py`, etc.). Since this is a very small project, it may be not necessary.
-
-- If the `virtualenv` call fails, we should not write the function in the shell configuration file.
+- [ ] Packaging (`setup.py`, etc.). Since this is a very small project, it may be not necessary.
