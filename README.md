@@ -49,22 +49,18 @@ Improvements
 
 Some improvements are auspicable or necessary:
 
-- [x] If the `virtualenv` call fails, we should not write the function in the shell configuration file.
-
 - [ ] `source` the configuration file after having written the function.
 
 - [ ] Adding a specific file to store all aliases/functions (so that we do not mess too much with the shell configuration file). We could do this by adding the following in the shell configuration file:
 
-```bash
-# Add VirtuAlias functions.
-if [ -f ~/.virtualias_functions ]; then
-    source ~/.virtualias_functions
-fi
-```
+    ```bash
+    # Add VirtuAlias functions.
+    if [ -f ~/.virtualias_functions ]; then
+        source ~/.virtualias_functions
+    fi
+    ```
 
-This entails that we would need to check for duplicate alias/function names in both the shell configuration file ***and*** the new `~/.virtualias_functions` file.
-
-- [ ] Providing a method to **remove** aliases when we delete an environment.
+    This entails that we would need to check for duplicate alias/function names in both the shell configuration file ***and*** the new `~/.virtualias_functions` file.
 
 - [ ] Automatically detecting shell (e.g. **bash**, **zsh**).
 
@@ -74,3 +70,7 @@ This entails that we would need to check for duplicate alias/function names in b
     (A wrapper is needed in order to avoid `SyntaxError` problems. See [this SO question](http://stackoverflow.com/questions/446052/how-can-i-check-for-python-version-in-a-program-that-uses-new-language-features))
 
 - [ ] Packaging (`setup.py`, etc.). Since this is a very small project, it may be not necessary.
+
+- [ ] If the `virtualenv` call fails, we should not write the function in the shell configuration file. (At the moment, this is done using the `delete_alias` method. It would be better not to touch the configuration file at all instead.)
+
+- [x] ~~Providing a method to **remove** aliases when we delete an environment.~~
