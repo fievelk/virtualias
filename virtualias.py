@@ -25,6 +25,13 @@ FUNCTION_BODY = """\n{0}() {{
 FUNCTION_TEXT = STARTING_LINE + FUNCTION_BODY + CLOSING_LINE
 FUNCTION_REGEXP = '{}\\(\\)\\s{{\n.*}}'
 
+# Function reference to be written in the shell configuration file
+FUNCTIONS_REFERENCE_START = '\n# VirtuAlias functions reference.'
+FUNCTIONS_REFERENCE_BODY = """\nif [ -f ~/.virtualias_functions ]; then
+    source ~/.virtualias_functions
+fi"""
+FUNCTIONS_REFERENCE = FUNCTIONS_REFERENCE_START + FUNCTIONS_REFERENCE_BODY
+
 
 class AliasExistsException(Exception):
     def __init__(self, value):
@@ -40,56 +47,72 @@ def delete_alias(alias, filename):
     """
 
     filepath = expanduser(filename)
-    with open(filepath, 'r+') as config_file:
+    with open(filepath, 'r+') as alias_stream:
         text = ''
-        for line in config_file:
+        for line in alias_stream:
             if line.strip() == STARTING_LINE.format(alias).strip():
                 # Skip lines until we reach the end of the function.
                 found_closing_line = False
-                for function_line in config_file:
+                for function_line in alias_stream:
                     if function_line.strip() == CLOSING_LINE.format(alias).strip():
                         found_closing_line = True
                         break
                 if not found_closing_line:
-                    print("There is no closing line. VirtuAlias cannot delete " +
-                          "the alias.")
+                    print("VirtuAlias cannot delete the alias.")
                     return False
             else:
                 text += line
 
-        config_file.seek(0)
-        config_file.truncate()
-        config_file.write(text)
+        alias_stream.seek(0)
+        alias_stream.truncate()
+        alias_stream.write(text)
 
-def write_alias(config_file, alias, dest_dir):
+def write_alias(alias_stream, alias, dest_dir):
     """Write the alias (actually a function with the alias name) in the configuration
     file. Function behaviour: change directory to the new virtualenv directory
     (`dest_dir`), then activate the environment.
     """
 
-    if alias_exists(alias, config_file):
+    if alias_exists(alias, alias_stream):
         raise AliasExistsException("Alias '{}' already defined. ".format(alias) +
                 "Please choose another alias for your virtual environment.")
 
     CURRENT_DIR = os.getcwd()
     function_text = FUNCTION_TEXT.format(alias, CURRENT_DIR, dest_dir)
 
-    config_file.write(function_text + '\n')
+    alias_stream.write(function_text + '\n')
 
-def alias_exists(alias, config_file):
+def alias_exists(alias, alias_stream):
     """Check if alias already exists in the configuration file."""
 
     alias_re = r"\b{}()\b".format(alias)
-    for line in config_file:
+    for line in alias_stream:
         if re.match(alias_re, line):
             return True
     return False
 
+def reference_exists(config_stream):
+    for line in config_stream:
+        if line.strip() == FUNCTIONS_REFERENCE_START.strip():
+            return True
+    return False
+
+def edit_config_file(filepath):
+    """Modify the shell configuration file, adding a reference to the VirtuAlias
+    functions file (if it is not already present).
+    """
+    filepath = expanduser(filepath)
+    with open(filepath, 'a+') as config_stream:
+        # a+ opens the file at its end. So we need to go back to the top
+        config_stream.seek(0)
+        if not reference_exists(config_stream):
+            print("Writing reference to VirtuAlias functions file in " + filepath + ".")
+            config_stream.write(FUNCTIONS_REFERENCE)
+
 def destination_specified(virtualenv_args):
     """Check if a parameter to define the destination folder for the virtualenv
-    has been specified.
+    command has been specified.
     """
-
     if virtualenv_args:
         for arg in virtualenv_args:
             if not arg.startswith("-"):
@@ -97,18 +120,18 @@ def destination_specified(virtualenv_args):
                 return arg
     return None
 
-def edit_config_file(alias, virtualenv_args, filename='~/.zshrc'):
+def edit_alias_file(alias, virtualenv_args, filename='~/.zshrc'):
     dest_dir = destination_specified(virtualenv_args)
     if not dest_dir:
-        print("You did not specify a folder for your virtualenv. Quitting") # subsitute this with an exception
+        print("You did not specify a folder for your virtualenv. Quitting.") # subsitute this with an exception
         sys.exit()
 
     filepath = expanduser(filename)
-    with open(filepath, 'a+') as config_file:
+    with open(filepath, 'a+') as alias_stream:
         # a+ opens the file at its end. So we need to go back to the top
-        config_file.seek(0)
+        alias_stream.seek(0)
         try:
-            write_alias(config_file, alias, dest_dir)
+            write_alias(alias_stream, alias, dest_dir)
         except AliasExistsException as e:
             raise
 
@@ -150,17 +173,18 @@ def main():
 
     # dest is the name that the variable will take. I.e. args.alias in this case.
     parser.add_argument('-a', '--alias', dest='alias', action='store',
-        help='Add specified alias to .zshrc file.')
+        help='Add specified alias to your shell configuration file.')
 
     args, virtualenv_args = parser.parse_known_args()
 
     # If an alias is specified, create the alias and call virtualenv
     if args.alias:
-        edit_config_file(args.alias, virtualenv_args, filename='~/.zshrc')
+        edit_config_file('~/.zshrc')
+        edit_alias_file(args.alias, virtualenv_args, filename='~/.virtualias_functions')
         try:
             call_virtualenv(virtualenv_args)
         except RuntimeError as e:
-            delete_alias(args.alias, filename='~/.zshrc')
+            delete_alias(args.alias, filename='~/.virtualias_functions')
 
     # If an alias is NOT specified, ask user and eventually call virtualenv
     else:
@@ -168,10 +192,10 @@ def main():
             "you want to create it anyway using the good old virtualenv command?")
         use_old_ve = user_yes_no(old_ve_question)
         if use_old_ve:
-            print("Use old virtualenv")
+            print("Use old virtualenv.")
             call_virtualenv(virtualenv_args)
         else:
-            print("Exiting")
+            print("Exiting.")
             sys.exit()
 
 if __name__ == '__main__':

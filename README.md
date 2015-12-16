@@ -51,7 +51,23 @@ Some improvements are auspicable or necessary:
 
 - [ ] `source` the configuration file after having written the function.
 
-- [ ] Adding a specific file to store all aliases/functions (so that we do not mess too much with the shell configuration file). We could do this by adding the following in the shell configuration file:
+
+- [ ] Do we need to check for duplicate alias/function names in both the shell configuration file ***and*** the new `~/.virtualias_functions` file?
+
+- [ ] Automatically detect shell (e.g. **bash**, **zsh**).
+
+- [ ] Provide a parameter to manually specify the shell configuration file (e.g. `~/.bashrc`, `~/.zshrc`, etc.).
+
+- [ ] Create a wrapper around **VirtuAlias** so that the script is only executed when your Python version is `>= 3`.
+    (A wrapper is needed in order to avoid `SyntaxError` problems. See [this SO question](http://stackoverflow.com/questions/446052/how-can-i-check-for-python-version-in-a-program-that-uses-new-language-features))
+
+- [ ] Package (`setup.py`, etc.). Since this is a very small project, it may be not necessary.
+
+- [ ] If the `virtualenv` call fails, we should not write the function in the shell configuration file. (At the moment, this is done using the `delete_alias` method. It would be better not to touch the configuration file at all instead.)
+
+- [x] ~~Provide a method to **remove** aliases when we delete an environment.~~
+
+- [x] ~~Add a specific file to store all aliases/functions (so that we do not mess too much with the shell configuration file). We could do this by adding the following in the shell configuration file:~~
 
     ```bash
     # Add VirtuAlias functions.
@@ -59,18 +75,3 @@ Some improvements are auspicable or necessary:
         source ~/.virtualias_functions
     fi
     ```
-
-    This entails that we would need to check for duplicate alias/function names in both the shell configuration file ***and*** the new `~/.virtualias_functions` file.
-
-- [ ] Automatically detecting shell (e.g. **bash**, **zsh**).
-
-- [ ] Providing a parameter to manually specify the shell configuration file (e.g. `~/.bashrc`, `~/.zshrc`, etc.).
-
-- [ ] Creating a wrapper around **VirtuAlias** so that the script is only executed when your Python version is `>= 3`.
-    (A wrapper is needed in order to avoid `SyntaxError` problems. See [this SO question](http://stackoverflow.com/questions/446052/how-can-i-check-for-python-version-in-a-program-that-uses-new-language-features))
-
-- [ ] Packaging (`setup.py`, etc.). Since this is a very small project, it may be not necessary.
-
-- [ ] If the `virtualenv` call fails, we should not write the function in the shell configuration file. (At the moment, this is done using the `delete_alias` method. It would be better not to touch the configuration file at all instead.)
-
-- [x] ~~Providing a method to **remove** aliases when we delete an environment.~~
