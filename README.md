@@ -51,10 +51,8 @@ Some improvements are auspicable or necessary:
 
 - [ ] `source` the configuration file after having written the function.
 
-
 - [ ] Do we need to check for duplicate alias/function names in both the shell configuration file ***and*** the new `~/.virtualias_functions` file?
 
-- [ ] Automatically detect shell (e.g. **bash**, **zsh**).
 
 - [ ] Provide a parameter to manually specify the shell configuration file (e.g. `~/.bashrc`, `~/.zshrc`, etc.).
 
@@ -75,3 +73,4 @@ Some improvements are auspicable or necessary:
         source ~/.virtualias_functions
     fi
     ```
+- [x] Automatically detect shell (e.g. **bash**, **zsh**).
