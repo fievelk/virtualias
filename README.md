@@ -73,4 +73,4 @@ Some improvements are auspicable or necessary:
         source ~/.virtualias_functions
     fi
     ```
-- [x] Automatically detect shell (e.g. **bash**, **zsh**).
+- [x] ~~Automatically detect shell (e.g. **bash**, **zsh**).~~
