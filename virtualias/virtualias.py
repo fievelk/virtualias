@@ -191,7 +191,10 @@ def main():
         Similar to virtualenvwrapper, but without the WORKING_HOME variable.")
 
     # dest is the name that the variable will take. I.e. args.alias in this case.
-    parser.add_argument('-a', '--alias', dest='alias', action='store',
+    parser.add_argument(
+        '-a', '--alias',
+        dest='alias',
+        action='store',
         help='Add specified alias to your shell configuration file.')
 
     args, virtualenv_args = parser.parse_known_args()
