@@ -11,26 +11,36 @@ Installation
 
 To install **VirtuAlias** on your system:
 
-- download **VirtuAlias**:
+- download **VirtuAlias** using one of the following commands:
 
-    ```
+    ```bash
     git clone https://github.com/fievelk/virtualias
-    ```
-
-    Or
-
-    ```
+    # or
     curl -LOk https://github.com/fievelk/virtualias/archive/master.zip
     ```
     If you use the latest method, unzip the downloaded file.
 
-- Change directory to the root `virtualias` folder, then run the setup:
+- Change directory to the root `virtualias` (or `virtualias-master`) folder, then run the setup:
 
-    ```
+    ```bash
     python3 setup.py install
     ```
+    The `virtualias` command should now be working on your system.
 
-- The `virtualias` command should now be working on your system.
+
+- **Note:** In order to use the functions defined in `~/.virtualias_functions` for the first time, you need to re-login in the system or give the following command:
+
+    ```
+    source ~/.your_config_file
+    ```
+    depending on your configuration file (see table below).
+
+    #### Available shells
+
+    | Shell    | $SHELL      | Config file |
+    | -------- | ----------- | ----------- |
+    | **Bash** | `/bin/bash` | `~/.bashrc` |
+    | **Zsh**  | `/bin/zsh`  | `~/.zshrc`  |
 
 
 The function
@@ -47,27 +57,12 @@ your_alias() {
 
 **VirtuAlias** will also append the following lines to your shell configuration file (depending on the `$SHELL` variable):
 
-    ```bash
-    # Add VirtuAlias functions.
-    if [ -f ~/.virtualias_functions ]; then
-        source ~/.virtualias_functions
-    fi
-    ```
-
-**Note:** In order to use the functions defined in `~/.virtualias_functions` for the first time, you need to reboot the system or give the following command:
-
+```bash
+# VirtuAlias functions reference.
+if [ -f ~/.virtualias_functions ]; then
+    source ~/.virtualias_functions
+fi
 ```
-source ~/.your_config_file
-```
-depending on your configuration file (see table below).
-
-### Available shells
-
-| Shell    | $SHELL      | Config file |
-| -------- | ----------- | ----------- |
-| **Bash** | `/bin/bash` | `~/.bashrc` |
-| **Zsh**  | `/bin/zsh`  | `~/.zshrc`  |
-
 
 Usage
 ----------
@@ -76,7 +71,7 @@ Usage
 
 `./virtualias.py -a=your_alias your_env_dir`
 
-In the above case, your new environment will be created in `your_env_dir` and you will be able to activate it using the alias you specified (`your_alias` in the example above).
+In the above case, your new environment will be created in `your_env_dir` and you will be able to activate it using the alias (function) you specified (`your_alias` in the example above).
 
 
 Is VirtuAlias an alternative to virtualenvwrapper?
@@ -115,4 +110,4 @@ Some improvements are auspicable or necessary:
     ```
 - [x] ~~Automatically detect shell (e.g. **bash**, **zsh**).~~
 
-- [x] Package (`setup.py`, etc.). Since this is a very small project, it may be not necessary.
+- [x] ~~Package (`setup.py`, etc.). Since this is a very small project, it may be not necessary.~~
