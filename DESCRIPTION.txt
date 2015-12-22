@@ -1,0 +1,9 @@
+VirtuAlias wraps the virtualenv command, adding aliases for the environments.
+
+VirtuAlias is a minimal wrapper for virtualenv. It will simply create a new alias
+(actually, a function) everytime you create a new environment, allowing you to switch
+between them. Functions are appended to a new file (.virtualias_functions) in the
+user home folder.
+
+Note: this is a pretty basic script. If you are looking for something more, then
+you are probably looking for virtualenvwrapper.
