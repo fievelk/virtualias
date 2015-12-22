@@ -199,29 +199,33 @@ def main():
         action='store',
         help='Add specified alias to your shell configuration file.')
 
-    args, virtualenv_args = parser.parse_known_args()
-
+    parser.add_argument('virtualenv_args', nargs='*')
+    args = parser.parse_args()
     # If an alias is specified, create the alias and call virtualenv
-    if args.alias:
+    if not len(sys.argv) > 1:
+        print('You must provide some arguments.')
+        parser.print_help()
+        sys.exit(2)
+    elif args.alias:
         shell_config_file = detect_shell_config()
         edit_config_file(shell_config_file)
-        edit_alias_file(args.alias, virtualenv_args, filename='~/.virtualias_functions')
+        edit_alias_file(args.alias, args.virtualenv_args, filename='~/.virtualias_functions')
         try:
-            call_virtualenv(virtualenv_args)
+            call_virtualenv(args.virtualenv_args)
         except RuntimeError as e:
             delete_alias(args.alias, filename='~/.virtualias_functions')
 
     # If an alias is NOT specified, ask user and eventually call virtualenv
     else:
         old_ve_question = ("You did not specify an alias for your environment. Do "
-            "you want to create it anyway using the good old virtualenv command?")
+            "you want to create it anyway using the virtualenv command?")
         use_old_ve = user_yes_no(old_ve_question)
         if use_old_ve:
-            print("Use old virtualenv.")
-            call_virtualenv(virtualenv_args)
+            print("Calling virtualenv.")
+            call_virtualenv(args.virtualenv_args)
         else:
             print("Exiting.")
-            sys.exit()
+            sys.exit(2)
 
 if __name__ == '__main__':
     main()
