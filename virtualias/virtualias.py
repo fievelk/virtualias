@@ -198,8 +198,7 @@ def main():
         action='store',
         help='Add specified alias to your shell configuration file.')
 
-    parser.add_argument('virtualenv_args', nargs='*')
-    args = parser.parse_args()
+    args, virtualenv_args = parser.parse_known_args()
     # If an alias is specified, create the alias and call virtualenv
     if not len(sys.argv) > 1:
         print('You must provide some arguments.')
@@ -208,9 +207,9 @@ def main():
     elif args.alias:
         shell_config_file = detect_shell_config()
         edit_config_file(shell_config_file)
-        edit_alias_file(args.alias, args.virtualenv_args, filename='~/.virtualias_functions')
+        edit_alias_file(args.alias, virtualenv_args, filename='~/.virtualias_functions')
         try:
-            call_virtualenv(args.virtualenv_args)
+            call_virtualenv(virtualenv_args)
         except RuntimeError as e:
             delete_alias(args.alias, filename='~/.virtualias_functions')
 
@@ -221,7 +220,7 @@ def main():
         use_old_ve = user_yes_no(old_ve_question)
         if use_old_ve:
             print("Calling virtualenv.")
-            call_virtualenv(args.virtualenv_args)
+            call_virtualenv(virtualenv_args)
         else:
             print("Exiting.")
             sys.exit(2)
