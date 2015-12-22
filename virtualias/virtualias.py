@@ -35,7 +35,9 @@ FUNCTIONS_REFERENCE = FUNCTIONS_REFERENCE_START + FUNCTIONS_REFERENCE_BODY
 # Supported shells and relative configuration files:
 SUPPORTED_SHELLS = {
     '/bin/bash': '~/.bashrc',
-    '/bin/zsh': '~/.zshrc'
+    '/usr/bin/bash': '~/.bashrc',
+    '/bin/zsh': '~/.zshrc',
+    '/usr/bin/zsh': '~/.zshrc'
 }
 
 
