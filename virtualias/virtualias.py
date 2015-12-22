@@ -4,7 +4,6 @@
 
 import argparse # We do not use optparse because it is deprecated since python 2.7
 import os
-import pdb
 import re
 import subprocess
 import sys
